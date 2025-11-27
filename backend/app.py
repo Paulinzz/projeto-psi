@@ -16,3 +16,6 @@ login_manager.init_app(app)
 db.init_app(app)
 init_db(app)
 
+from backend.controllers.auth import auth_bp
+
+app.register_blueprint(auth_bp)
