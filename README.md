@@ -59,11 +59,11 @@ interativo com dados de reclamações por localidade). -->
 - `GET /api/reclamacoes/pendentes` — lista as reclamações pendentes
 - `GET /api/reclamacoes/resolvidas` — lista as reclamações resolvidas
 - `GET /api/reclamacoes/contestadas` — lista as reclamações contestadas
-- `GET /api/reclamacoes/<id>` — detalhes de uma reclamação
-- `POST /api/reclamacoes/adicionar` — criar reclamação (requer login)
-- `POST /api/reclamacoes/<id>/resolver` — marcar como resolvida (requer login)
-- `POST /api/reclamacoes/<id>/contestar` — marcar como contestada (requer login)
-- `POST /api/reclamacoes/<id>/remover` — remover reclamação (requer login)
+- `GET /api/reclamacao/<id>` — detalhes de uma reclamação
+- `POST /api/reclamacao/adicionar` — criar reclamação (requer login)
+- `POST /api/reclamacao/<id>/resolver` — marcar como resolvida (requer login)
+- `POST /api/reclamacao/<id>/contestar` — marcar como contestada (requer login)
+- `POST /api/reclamacao/<id>/remover` — remover reclamação (requer login)
 - `POST /api/cadastro` — cadastra o usuário
 - `POST /api/login` — faz login
 
