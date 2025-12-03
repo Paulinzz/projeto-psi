@@ -2,8 +2,6 @@ import Link from "next/link";
 import Button from "./ui/Button";
 
 export default function Header() {
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
   return (
     <header className="flex flex-row justify-center gap-1">
       <Link href="/">
