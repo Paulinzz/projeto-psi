@@ -3,6 +3,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from os import getenv
 from backend.extensions import init_db, init_env, db, login_manager
+from backend.utils import criar_diretorios_upload
+
+
+criar_diretorios_upload()
 
 init_env()
 load_dotenv("../.env")
@@ -21,8 +25,10 @@ api_bp = Blueprint('api', __name__, url_prefix='/api') # todas as rotas começam
 from backend.controllers.auth_controller import auth_bp
 from backend.controllers.reclamacoes_controller import reclamacoes_bp
 from backend.controllers.contestacoes_controller import contestacoes_bp
+from backend.controllers.uploads_controller import uploads_bp
 api_bp.register_blueprint(auth_bp)
 api_bp.register_blueprint(reclamacoes_bp)
 api_bp.register_blueprint(contestacoes_bp)
+api_bp.register_blueprint(uploads_bp)
 
 app.register_blueprint(api_bp)
