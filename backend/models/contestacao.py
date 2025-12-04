@@ -51,7 +51,7 @@ class Contestacao(db.Model):
             'motivo': self.motivo,
             'reclamacaoId': self.reclamacao_id,
             'usuarioId': self.usuario_id,
-            'autor': self.usuario.username,
+            'autor': self.usuario.nome,
             'dataContestacao': self.data_contestacao.isoformat() if self.data_contestacao else None,
             'provas': [prova.to_dict() for prova in self.provas]
         }
