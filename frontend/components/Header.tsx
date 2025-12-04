@@ -16,6 +16,9 @@ export default function Header() {
       <Link href="/logout">
         <Button content="Sair" />
       </Link>
+      <Link href="/reclamacoes">
+        <Button content="Reclamações" />
+      </Link>
     </header>
   );
 }

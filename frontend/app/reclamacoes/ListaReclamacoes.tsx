@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import clsx from "clsx";
 
 export default function ListaReclamacoes({ lista }: { lista: any[] }) {
   const router = useRouter();
@@ -12,32 +13,52 @@ export default function ListaReclamacoes({ lista }: { lista: any[] }) {
 
     const response = await fetch(url, {
       method: "POST",
-      credentials: "include" as RequestCredentials
+      credentials: "include" as RequestCredentials,
     });
   }
   return (
-    <>
+    <main className="flex justify-center align-center flx-row gap-3">
       {lista.map((reclamacao) => (
-        <div key={reclamacao.id}>
-          <ul>
+        <div
+          key={reclamacao.id}
+          className="p-5 bg-gray-800 rounded-xl flex flex-col gap-2"
+        >
+          <ul className="flex flex-col gap-5">
             <li>Autor: {reclamacao.autor}</li>
             <li>Titulo: {reclamacao.titulo}</li>
             <li>Descrição: {reclamacao.descricao}</li>
             <li>Cidade: {reclamacao.cidade}</li>
-            <li>Status: {reclamacao.status}</li>
+            <li
+              className={clsx("p-2 rounded-xl", {
+                "bg-green-600": reclamacao.status === "Resolvida",
+                "bg-yellow-600": reclamacao.status === "Pendente",
+              })}
+            >
+              Status: {reclamacao.status}
+            </li>
           </ul>
-
           <button
+            className="bg-gray-700 rounded p-3 cursor-pointer"
+            onClick={() => {
+              router.replace(`/reclamacao?id=${reclamacao.id}`);
+            }}
+          >
+            Acessar reclamação
+          </button>
+          <button
+            className={clsx("bg-gray-700 rounded p-3 cursor-pointer", {
+              invisible: reclamacao.status === "Resolvida",
+            })}
             type="button"
             onClick={async () => {
               await handleResolver(reclamacao.id);
-              router.refresh()
+              router.refresh();
             }}
           >
             Resolver reclamação
           </button>
         </div>
       ))}
-    </>
+    </main>
   );
 }

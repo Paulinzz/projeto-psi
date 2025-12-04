@@ -7,6 +7,8 @@ export default async function Page() {
   const data = await resp.json();
 
   return (
-    <ListaReclamacoes lista={data.reclamacoes}/>
+    <main>
+      <ListaReclamacoes lista={data.reclamacoes} />
+    </main>
   );
 }
