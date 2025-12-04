@@ -83,19 +83,20 @@ def add_reclamacao():
         return jsonify({"message": f"Erro ao adicionar reclamação: {e}"}), 500
 
     imagens = arquivos.getlist("fotos")
-    path = criar_e_obter_diretorio_reclamacao(reclamacao.id)
 
-    try:
-        for img in imagens:
-            filename = salvar_imagem(path, img)
-            url = f"/api/uploads/reclamacoes/{reclamacao.id}/{filename}"
-            foto_reclamacao = FotoReclamacao(url=url, nome_arquivo=filename, reclamacao=reclamacao)
-            db.session.add(foto_reclamacao)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        shutil.rmtree(path)
-        return jsonify({"message": f"Erro ao adicionar as fotos da reclamação, a reclamação foi adicionada sem imagens: {e}"}), 500
+    if imagens and imagens[0]:
+        path = criar_e_obter_diretorio_reclamacao(reclamacao.id)
+        try:
+            for img in imagens:
+                filename = salvar_imagem(path, img)
+                url = f"/api/uploads/reclamacoes/{reclamacao.id}/{filename}"
+                foto_reclamacao = FotoReclamacao(url=url, nome_arquivo=filename, reclamacao=reclamacao)
+                db.session.add(foto_reclamacao)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            shutil.rmtree(path)
+            return jsonify({"message": f"Erro ao adicionar as fotos da reclamação, a reclamação foi adicionada sem imagens: {e}"}), 500
 
     return jsonify({"message": "Reclamação adicionada com sucesso", "reclamacao": reclamacao.to_dict()}), 201
 

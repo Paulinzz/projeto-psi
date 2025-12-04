@@ -29,8 +29,8 @@ def atualizar_contestacao(contestacao_id):
         contestacao.motivo = motivo
     
     imagens = arquivos.getlist("fotos")
-    # print(imagens)
-    if imagens: # objeto com imagem vazia, por algum motivo desconhecido
+    print(imagens)
+    if imagens and imagens[0].filename:
         if len(contestacao.provas) + len(imagens) >= 5:
             return jsonify({"message": "O limite de 5 imagens foi atingido"}), 400
 
@@ -83,18 +83,19 @@ def contestar_reclamacao(reclamacao_id):
 
     arquivos = request.files
     imagens = arquivos.getlist("fotos")
-    path = criar_e_obter_diretorio_contestacao(contestacao.id)
 
-    try:
-        for img in imagens:
-            filename = salvar_imagem(path, img)
-            url = f"/api/uploads/contestacoes/{contestacao.id}/{filename}"
-            prova_contestacao = ProvaContestacao(url=url, nome_arquivo=filename, contestacao=contestacao)
-            db.session.add(prova_contestacao)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        shutil.rmtree(path)
-        return jsonify({"message": f"Erro ao adicionar as fotos de prova de constestação, a contestação foi adicionada sem imagens: {e}"}), 500
+    if imagens and imagens[0]:
+        path = criar_e_obter_diretorio_contestacao(contestacao.id)
+        try:
+            for img in imagens:
+                filename = salvar_imagem(path, img)
+                url = f"/api/uploads/contestacoes/{contestacao.id}/{filename}"
+                prova_contestacao = ProvaContestacao(url=url, nome_arquivo=filename, contestacao=contestacao)
+                db.session.add(prova_contestacao)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            shutil.rmtree(path)
+            return jsonify({"message": f"Erro ao adicionar as fotos de prova de constestação, a contestação foi adicionada sem imagens: {e}"}), 500
 
     return jsonify({"message": "Contestação adicionada com sucesso", "contestacao": contestacao.to_dict()}), 201
