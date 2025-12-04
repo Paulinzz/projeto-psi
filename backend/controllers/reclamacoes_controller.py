@@ -14,6 +14,10 @@ from backend.utils import (
 
 reclamacoes_bp = Blueprint('reclamacoes', __name__)
 
+@reclamacoes_bp.route('/reclamacao/adicionar', methods=["GET"])
+def get_adicionar_reclamacao():
+    return jsonify({"max_imagens": 5}), 200
+
 
 # RECLAMAÇÃO INDIVIDUAL
 
@@ -39,6 +43,48 @@ def resolver_reclamacao(reclamacao_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Erro ao resolver reclamação: {e}"}), 500
+
+@reclamacoes_bp.route('/reclamacao/<int:reclamacao_id>/atualizar', methods=["POST"])
+@login_required
+def atualizar_reclamacao(reclamacao_id):
+    reclamacao: Reclamacao = Reclamacao.query.get_or_404(reclamacao_id)
+
+    usuario_id = current_user.get_id()
+    if usuario_id != reclamacao.usuario_id:
+        return jsonify({"message": "Apenas o autor da reclamação pode atualizá-la"}), 401
+
+    dados = request.form
+    arquivos = request.files
+
+    # Atualizar campos opcionais
+    endereco = dados.get("endereco")
+    if endereco is not None:
+        reclamacao.endereco = endereco
+
+    imagens = arquivos.getlist("fotos") if arquivos else []
+
+    total_fotos = len(reclamacao.fotos) + len(imagens)
+    if total_fotos > 5:
+        return jsonify({"message": "Máximo de 5 imagens permitidas"}), 400
+
+    path = criar_e_obter_diretorio_reclamacao(reclamacao.id)
+
+    try:
+        for img in imagens:
+            if img.filename:
+                filename = salvar_imagem(path, img)
+                url = f"/api/uploads/reclamacoes/{reclamacao.id}/{filename}"
+                foto_reclamacao = FotoReclamacao(url=url, nome_arquivo=filename, reclamacao=reclamacao)
+                db.session.add(foto_reclamacao)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Erro ao adicionar as fotos: {e}"}), 500
+
+    return jsonify({
+        "message": "Reclamação atualizada com sucesso",
+        "reclamacao": reclamacao.to_dict()
+    }), 200
 
 @reclamacoes_bp.route('/reclamacao/adicionar', methods=["POST"])
 @login_required
@@ -79,14 +125,18 @@ def add_reclamacao():
         return jsonify({"message": f"Erro ao adicionar reclamação: {e}"}), 500
 
     imagens = arquivos.getlist("fotos")
+    if len(imagens) > 5:
+        return jsonify({"message": "Máximo de 5 imagens permitidas"}), 400
+
     path = criar_e_obter_diretorio_reclamacao(reclamacao.id)
 
     try:
         for img in imagens:
-            filename = salvar_imagem(path, img)
-            url = f"/api/uploads/reclamacoes/{reclamacao.id}/{filename}"
-            foto_reclamacao = FotoReclamacao(url=url, nome_arquivo=filename, reclamacao=reclamacao)
-            db.session.add(foto_reclamacao)
+            if img.filename:  # Verifica se há arquivo
+                filename = salvar_imagem(path, img)
+                url = f"/api/uploads/reclamacoes/{reclamacao.id}/{filename}"
+                foto_reclamacao = FotoReclamacao(url=url, nome_arquivo=filename, reclamacao=reclamacao)
+                db.session.add(foto_reclamacao)
         db.session.commit()
     except Exception as e:
         db.session.rollback()
