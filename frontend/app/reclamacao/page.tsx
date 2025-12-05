@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import getInfoReclamacao from "./actions";
 import { useState, useEffect, Key } from "react";
+import  toLocal  from "@/utils/localTime";
 
 export default function Page() {
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -31,9 +32,9 @@ export default function Page() {
           <li>Endreço: {reclamacao.endereco}</li>
           <li>Status: {reclamacao.status}</li>
           <li>Autor: {reclamacao.autor}</li>
-          <li>Data criada: {reclamacao.dataCriacao}</li>
-          <li>Data resolvida: {reclamacao.dataResolucao}</li>
-          <li>Data atualizada: {reclamacao.dataAtualizacao}</li>
+          <li>Data criada: {toLocal(reclamacao.dataCriacao)}</li>
+          <li>Data resolvida: {toLocal(reclamacao.dataResolucao)}</li>
+          <li>Data atualizada: {toLocal(reclamacao.dataAtualizacao)}</li>
         </ul>
         <div>
           {reclamacao.fotos.map((foto: any) => (

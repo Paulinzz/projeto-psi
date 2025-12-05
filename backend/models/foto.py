@@ -1,8 +1,9 @@
-from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, DateTime, ForeignKey
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 from backend.extensions import db
+from backend.utils import noNaive
 
 if TYPE_CHECKING:
     from .contestacao import Contestacao
@@ -27,8 +28,8 @@ class FotoReclamacao(db.Model):
     )
     
     data_upload: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     
@@ -59,8 +60,8 @@ class ProvaContestacao(db.Model):
     )
     
     data_upload: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     
@@ -69,5 +70,5 @@ class ProvaContestacao(db.Model):
             'id': self.id,
             'url': self.url, #tirar isso já que expõe a rota da api? 
             'nomeArquivo': self.nome_arquivo,
-            'dataUpload': self.data_upload.isoformat() if self.data_upload else None
+            'dataUpload': noNaive(self.data_upload).isoformat() if self.data_upload else None
         }

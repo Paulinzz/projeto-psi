@@ -1,9 +1,10 @@
 import enum
-from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Text, DateTime, ForeignKey, Enum
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 from backend.extensions import db
+from backend.utils import noNaive
 
 if TYPE_CHECKING:
     from .contestacao import Contestacao
@@ -37,15 +38,15 @@ class Reclamacao(db.Model):
     usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="reclamacoes")
     
     data_criacao: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     data_resolucao: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     data_atualizacao: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     
@@ -73,9 +74,9 @@ class Reclamacao(db.Model):
             'status': self.status.value if isinstance(self.status, StatusReclamacao) else self.status,
             'usuarioId': self.usuario_id,
             'autor': self.usuario.nome,
-            'dataCriacao': self.data_criacao.isoformat() if self.data_criacao else None,
-            'dataResolucao': self.data_resolucao.isoformat() if self.data_resolucao else None,
-            'dataAtualizacao': self.data_atualizacao.isoformat() if self.data_atualizacao else None,
+            'dataCriacao': noNaive(self.data_criacao).isoformat() if self.data_criacao else None,
+            'dataResolucao': noNaive(self.data_resolucao).isoformat() if self.data_resolucao else None,
+            'dataAtualizacao': noNaive(self.data_atualizacao).isoformat() if self.data_atualizacao else None,
             'fotos': [foto.to_dict() for foto in self.fotos],
             'contestacoes': [c.to_dict() for c in self.contestacoes]
         }

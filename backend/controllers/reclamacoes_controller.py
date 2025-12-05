@@ -1,6 +1,7 @@
 import shutil
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
+from datetime import datetime, timezone
 from backend.models import StatusReclamacao, Reclamacao, FotoReclamacao
 from backend.extensions import db
 from backend.utils import (
@@ -38,6 +39,7 @@ def resolver_reclamacao(reclamacao_id):
 
     try:
         reclamacao.status = StatusReclamacao.RESOLVIDA
+        reclamacao.data_resolucao = datetime.now(timezone.utc)
         db.session.commit()
         return jsonify({"message": "Reclamação resolvida com sucesso"}), 200
     except Exception as e:
