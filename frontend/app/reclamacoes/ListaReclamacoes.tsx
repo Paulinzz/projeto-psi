@@ -17,7 +17,7 @@ export default function ListaReclamacoes({ lista }: { lista: any[] }) {
     });
   }
   return (
-    <main className="flex justify-center align-center flx-row gap-3">
+    <main className="flex justify-center items-center flx-row gap-3">
       {lista.map((reclamacao) => (
         <div
           key={reclamacao.id}
@@ -48,7 +48,9 @@ export default function ListaReclamacoes({ lista }: { lista: any[] }) {
           </button>
           <button
             className={clsx("bg-gray-700 rounded p-3 cursor-pointer", {
-              invisible: ["Resolvida", "Contestada"].includes(reclamacao.status),
+              invisible: ["Resolvida", "Contestada"].includes(
+                reclamacao.status,
+              ),
             })}
             type="button"
             onClick={async () => {
