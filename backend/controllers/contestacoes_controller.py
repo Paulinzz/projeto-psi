@@ -22,14 +22,19 @@ def atualizar_contestacao(contestacao_id):
     if current_user.get_id() != contestacao.usuario_id:
         return jsonify({"message": "Apenas o autor da contestação pode atualiza-la"}), 401
     
-    arquivos = request.files
 
     motivo = dados.get("motivo")
-    if motivo and motivo != contestacao.motivo:
-        contestacao.motivo = motivo
     
+    try:
+        if motivo and motivo != contestacao.motivo:
+            contestacao.motivo = motivo
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Erro ao atualizar dados da contestação: {e}"}), 500
+
+    arquivos = request.files
     imagens = arquivos.getlist("fotos")
-    print(imagens)
     if imagens and imagens[0].filename:
         if len(contestacao.provas) + len(imagens) >= 5:
             return jsonify({"message": "O limite de 5 imagens foi atingido"}), 400
@@ -48,7 +53,7 @@ def atualizar_contestacao(contestacao_id):
             return jsonify({"message": f"Erro ao adicionar as fotos de prova de constestação: {e}"}), 500
 
     return jsonify({"message": "Contestação atualizada com sucesso", "contestacao": contestacao.to_dict()}), 200
-# falta testar
+
 @contestacoes_bp.route('/reclamacao/<int:reclamacao_id>/contestar', methods=['POST'])
 @login_required
 def contestar_reclamacao(reclamacao_id):
