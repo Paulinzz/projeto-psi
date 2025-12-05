@@ -1,9 +1,10 @@
-from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Text, DateTime, ForeignKey
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
 from backend.extensions import db
+from backend.utils import noNaive
 
 if TYPE_CHECKING:
     from .foto import ProvaContestacao
@@ -35,8 +36,8 @@ class Contestacao(db.Model):
 
     # Timestamp (data da contestação)
     data_contestacao: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
@@ -54,6 +55,6 @@ class Contestacao(db.Model):
             'reclamacaoId': self.reclamacao_id,
             'usuarioId': self.usuario_id,
             'autor': self.usuario.nome,
-            'dataContestacao': self.data_contestacao.isoformat() if self.data_contestacao else None,
+            'dataContestacao': noNaive(self.data_contestacao).isoformat() if self.data_contestacao else None,
             'provas': [prova.to_dict() for prova in self.provas]
         }

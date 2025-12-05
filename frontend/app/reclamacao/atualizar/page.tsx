@@ -28,7 +28,7 @@ export default function Page() {
 
     const formData = new FormData(form);
 
-    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reclamacao/atualizar`;
+    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reclamacao/${id}/atualizar`;
     const resp = await fetch(url, {
       method: "POST",
       credentials: "include" as RequestCredentials,

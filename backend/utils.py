@@ -2,6 +2,15 @@ import os
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from secrets import token_hex
+from datetime import datetime, timezone
+
+
+def noNaive(date: datetime):
+    "Impede que a data não tenha um timezone, forçando a utilizar o timezone utc +00:00 ou Z"
+    if date.tzinfo is None:
+        return date.replace(tzinfo=timezone.utc)
+    return date
+
 
 UPLOAD_PATH = "./uploads"
 FOTOS_PATH = f"{UPLOAD_PATH}/fotos"
@@ -52,7 +61,7 @@ def salvar_imagem(path: str, arquivo: FileStorage) -> str:
             filepath = os.path.join(path, filename)
 
         arquivo.save(filepath)
-
+        
         return filename
     except Exception as e:
         raise Exception(f"Erro ao salvar imagem: {e}")

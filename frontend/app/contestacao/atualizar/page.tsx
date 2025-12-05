@@ -13,7 +13,7 @@ export default function Page() {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reclamacao/${id}/contestacao/atualizar`;
+    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contestacao/${id}/atualizar`;
     const requisicao = await fetch(url, {
       method: "POST",
       credentials: "include" as RequestCredentials,

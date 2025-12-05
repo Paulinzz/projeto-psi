@@ -2,9 +2,12 @@
 
 import { useSearchParams } from "next/navigation";
 import getInfoReclamacao from "./actions";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Key } from "react";
+import  toLocal  from "@/utils/localTime";
 
 export default function Page() {
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   const pPesquisa = useSearchParams();
   const id = pPesquisa.get("id");
 
@@ -19,7 +22,6 @@ export default function Page() {
       })();
     }
   }, [id]);
-
   if (reclamacao) {
     return (
       <main>
@@ -30,10 +32,15 @@ export default function Page() {
           <li>Endreço: {reclamacao.endereco}</li>
           <li>Status: {reclamacao.status}</li>
           <li>Autor: {reclamacao.autor}</li>
-          <li>Data criada: {reclamacao.dataCriacao}</li>
-          <li>Data resolvida: {reclamacao.dataResolucao}</li>
-          <li>Data atualizada: {reclamacao.dataAtualizacao}</li>
+          <li>Data criada: {toLocal(reclamacao.dataCriacao)}</li>
+          <li>Data resolvida: {toLocal(reclamacao.dataResolucao)}</li>
+          <li>Data atualizada: {toLocal(reclamacao.dataAtualizacao)}</li>
         </ul>
+        <div>
+          {reclamacao.fotos.map((foto: any) => (
+            <img key={foto.id} src={API_URL+foto.url} alt="" />
+          ))}
+        </div>
       </main>
     );
   } else {

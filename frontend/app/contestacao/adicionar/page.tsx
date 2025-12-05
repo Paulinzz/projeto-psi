@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function Page() {
   const [files, setFiles] = useState<File[]>([]);
   const pPesquisa = useSearchParams();
-  const id = Number(pPesquisa.get("id"));
+  const id = Number(pPesquisa.get("id")); // id da reclamação
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
