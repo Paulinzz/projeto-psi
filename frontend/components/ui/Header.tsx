@@ -16,14 +16,16 @@ export default function Header() {
       <Link href="/reclamacoes">
         <Button content="Reclamações" />
       </Link>
-      <Link href="/usuario">
-        <Button content="Usuario" />
-      </Link>
 
       { autenticado ? 
-        <Link href="/logout">
-          <Button content="Sair" />
-        </Link>
+        <>
+          <Link href="/usuario">
+            <Button content="Usuario" />
+          </Link>
+          <Link href="/logout">
+            <Button content="Sair" />
+          </Link>
+        </>
         :   
         <>
           <Link href="/login">
