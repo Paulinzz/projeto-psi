@@ -7,6 +7,15 @@ from backend.extensions import db
 
 auth_bp = Blueprint('auth', __name__)
 
+@auth_bp.route('/me')
+def me():
+    dados = {"autenticado": False, "usuario": None}
+    if current_user.is_authenticated:
+        dados["autenticado"] = True
+        dados["usuario"] = current_user.to_dict()
+
+    return jsonify(dados), 200
+
 @auth_bp.route('/cadastro', methods=['POST'])
 def register():
     dados = request.json
@@ -60,10 +69,3 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "A sessão foi encerrada"}), 200
-
-@auth_bp.route('/me')
-def me():
-    if current_user.is_authenticated:
-        return jsonify(current_user.to_dict()), 200
-
-    return jsonify({"message": "Usuário não autenticado"}), 401
