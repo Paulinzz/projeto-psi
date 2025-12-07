@@ -1,14 +1,30 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
-import { getIconByStatus } from "@/utils/alerts"
+import { getIconByStatus } from "@/lib/utils/alerts"
 import "@/public/css/form.css";
 import Required from "@/components/ui/Required";
 
 
 export default function LoginForm() {
+  const params = useSearchParams();
+  const redirect = params.get("redirect");
+  const [showModal, setShowModal] = useState(true);
+
+  if (redirect && showModal) {
+    Swal.fire(
+      {
+        title: "Autenticação Necessária",
+        text: "Faça login para acessar essa página",
+        icon: "error"
+      }
+    );
+
+    setShowModal(false);
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
@@ -54,7 +70,12 @@ export default function LoginForm() {
         icon: getIconByStatus(response.status)
       }).then(() => {
         if (response.status === 200) {
-          router.push("/")
+          if (redirect) {
+            router.push(redirect);
+          }
+          else {
+            router.push("/")
+          }
         }
       });
     }

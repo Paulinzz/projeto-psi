@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { getIconByStatus } from "@/utils/alerts";
+import { getIconByStatus } from "@/lib/utils/alerts";
 
 export default function Page() {
   const router = useRouter();
@@ -35,10 +35,7 @@ export default function Page() {
           icon: getIconByStatus(response.status)
         }
       ).then(()=> {
-        if (response.status === 401){
-          router.push("/login")
-        }
-        else if (response.status === 200) {
+        if (response.status === 200) {
           router.push("/")
         }
       })
