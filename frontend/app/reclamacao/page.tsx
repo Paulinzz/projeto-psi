@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import getInfoReclamacao from "./actions";
 import { useState, useEffect, Key } from "react";
-import toLocal from "@/utils/localTime";
+import toLocal from "@/lib/utils/localTime";
 
 export default function Page() {
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;

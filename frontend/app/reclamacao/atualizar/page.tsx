@@ -4,8 +4,8 @@ import "./box.css";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import getInfoReclamacao from "../actions";
-import toLocal from "@/utils/localTime";
-import { getIconByStatus } from "@/utils/alerts";
+import toLocal from "@/lib/utils/localTime";
+import { getIconByStatus } from "@/lib/utils/alerts";
 import Swal from "sweetalert2";
 
 export default function Page() {

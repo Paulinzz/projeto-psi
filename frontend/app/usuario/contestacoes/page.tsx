@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import toLocal from "@/utils/localTime";
+import toLocal from "@/lib/utils/localTime";
 
 export default function Page() {
   const [dados, setDados] = useState<[] | null>(null);

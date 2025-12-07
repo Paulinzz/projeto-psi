@@ -1,6 +1,6 @@
 "use client";
 
-import { getIconByStatus } from "@/utils/alerts";
+import { getIconByStatus } from "@/lib/utils/alerts";
 import "@/public/css/form.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";

@@ -5,7 +5,7 @@ import cadastroAction from "./actions";
 import Required from "@/components/ui/Required";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import { getIconByStatus } from "@/utils/alerts";
+import { getIconByStatus } from "@/lib/utils/alerts";
 import { useRouter } from "next/navigation";
 
 export default function CadastroForm() {

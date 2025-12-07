@@ -2,7 +2,7 @@
 
 import Required from "@/components/ui/Required";
 import "@/public/css/form.css";
-import { getIconByStatus } from "@/utils/alerts";
+import { getIconByStatus } from "@/lib/utils/alerts";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
