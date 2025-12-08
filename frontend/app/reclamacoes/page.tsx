@@ -10,12 +10,12 @@ export default async function Page() {
 
   return (
     <>
-      <ListaReclamacoes lista={data.reclamacoes} />
       <div className="flex items-center justify-center">
         <Link href="/reclamacao/adicionar">
-          <Button content="Adicionar" />
+          <Button content="Adicionar reclamação" />
         </Link>
       </div>
+      <ListaReclamacoes lista={data.reclamacoes} />
     </>
   );
 }
