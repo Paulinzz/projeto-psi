@@ -2,14 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
-export default function ListaReclamacoes({ lista }: { lista: [] }) {
+export default function ListaReclamacoes({ lista }: { lista: any[] }) {
   const router = useRouter();
-  const [idUsuario, setIdUsuario] = useState<number | null>(null);
-  // faz requisição para /api/me e pega o id do usuario
-  // se o id do usuario for o mesmo do autor, mostra o botão de resolver
-
+  const { usuario } = useAuth();
+  
   async function handleResolver(reclamacaoId: number) {
     const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/reclamacao/${reclamacaoId}/resolver`;
 
@@ -17,26 +15,10 @@ export default function ListaReclamacoes({ lista }: { lista: [] }) {
       method: "POST",
       credentials: "include" as RequestCredentials,
     });
-  }
-  async function getEu() {
-    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    const url = `${apiUrl}/api/me`;
-    const request = await fetch(url, {
-      method: "GET",
-      credentials: "include" as RequestCredentials,
-    });
-    const data = await request.json();
-    return await data;
+
+    return response;
   }
 
-  useEffect(() => {
-    if (idUsuario === null) {
-      (async () => {
-        const usuario = await getEu();
-        setIdUsuario(await usuario.id);
-      })();
-    }
-  });
   return (
     <main className="flex justify-center items-center flx-row gap-3">
       {lista.map((reclamacao) => (
@@ -98,15 +80,15 @@ export default function ListaReclamacoes({ lista }: { lista: [] }) {
             })}
             type="button"
             onClick={() => {
-              router.push(`/contestacoes?id=${reclamacao.id}`);
+              router.push(`/contestacoes?idReclamacao=${reclamacao.id}`);
             }}
           >
             Acessar contestações
           </button>
           <button
             className={clsx("bg-gray-700 rounded p-3 cursor-pointer", {
-              invisible: Number(reclamacao.usuarioId) !== Number(idUsuario),
-              visible: Number(reclamacao.usuarioId) === Number(idUsuario),
+              invisible: Number(reclamacao.usuarioId) !== Number(usuario?.id),
+              visible: Number(reclamacao.usuarioId) === Number(usuario?.id),
             })}
             type="button"
             onClick={() => {

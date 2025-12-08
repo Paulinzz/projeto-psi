@@ -56,5 +56,6 @@ class Contestacao(db.Model):
             'usuarioId': self.usuario_id,
             'autor': self.usuario.nome,
             'dataContestacao': noNaive(self.data_contestacao).isoformat() if self.data_contestacao else None,
+            'tituloReclamacao': self.reclamacao.titulo,
             'provas': [prova.to_dict() for prova in self.provas]
         }

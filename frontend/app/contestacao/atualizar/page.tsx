@@ -33,7 +33,7 @@ export default function Page() {
         icon: getIconByStatus(response.status)
       }).then(() => {
         if (response.status === 200) {
-          router.push(`/reclamacao?id=${id}`)
+          router.push(`/contestacoes?idReclamacao=${json.contestacao.reclamacaoId}`)
         }
       });
     }
