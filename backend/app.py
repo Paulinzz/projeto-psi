@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from os import getenv
@@ -15,11 +15,16 @@ app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE")
 
+
 FRONTEND_URL = getenv("FRONTEND_URL")
 CORS(app, resources={r"/*": {"origins": FRONTEND_URL}}, supports_credentials=True)
 login_manager.init_app(app)
 db.init_app(app)
 init_db(app)
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"message": "Não encontrado"}), 404
 
 api_bp = Blueprint('api', __name__, url_prefix='/api') # todas as rotas começam com /api
 from backend.controllers.auth_controller import auth_bp
